@@ -22,7 +22,7 @@ namespace RegIN_Kylosov.Classes
                 EnableSsl = true,
             };
 
-            smtpClient.Send("landaxer@yandex.ru", To, "Проект RegIn", Message);
+            smtpClient.Send("TestKylosov@yandex.ru", To, "Проект RegIn", Message);
         }
     }
 }
