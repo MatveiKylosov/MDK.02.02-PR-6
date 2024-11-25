@@ -32,29 +32,13 @@ namespace RegIN_Kylosov.Pages
 
             if (LNameUser.Content != "")
             {
-
                 LNameUser.Content = "";
-                DoubleAnimation StartAnimation = new DoubleAnimation();
-                StartAnimation.From = 1;
-                StartAnimation.To = 0;
-                StartAnimation.Duration = TimeSpan.FromSeconds(0.6);
-
-                StartAnimation.Completed += delegate
-                {
-                    IUser.Source = new BitmapImage(new Uri("pack://application:,,,/Images/ic_user.png"));
-                    DoubleAnimation EndAnimation = new DoubleAnimation();
-                    EndAnimation.From = 0;
-                    EndAnimation.To = 1;
-                    EndAnimation.Duration = TimeSpan.FromSeconds(1.2);
-                    IUser.BeginAnimation(OpacityProperty, EndAnimation);
-                };
-
-                IUser.BeginAnimation(OpacityProperty, StartAnimation);
+                Tools.AnimateImageChange(IUser, new BitmapImage(new Uri("pack://application:,,,/Images/ic_user.png")));
             }
 
 
             if (TbLogin.Text.Length > 0)
-                SetNotification("Login is incorrect", Brushes.Red);
+                Tools.SetNotification(LNameUser,"Login is incorrect", Brushes.Red);
         }
 
 
@@ -62,30 +46,19 @@ namespace RegIN_Kylosov.Pages
         {
             if (OldLogin != TbLogin.Text)
             {
-                SetNotification("Hi, " + MainWindow.mainWindow.UserLogIn.Name, Brushes.Black);
+                Tools.SetNotification(LNameUser,"Hi, " + MainWindow.mainWindow.UserLogIn.Name, Brushes.Black);
 
                 try
                 {
+                    
                     BitmapImage biImg = new BitmapImage();
                     MemoryStream ms = new MemoryStream(MainWindow.mainWindow.UserLogIn.Image);
                     biImg.BeginInit();
                     biImg.StreamSource = ms;
                     biImg.EndInit();
                     ImageSource imgSrc = biImg;
-                    DoubleAnimation StartAnimation = new DoubleAnimation();
-                    StartAnimation.From = 1;
-                    StartAnimation.To = 0;
-                    StartAnimation.Duration = TimeSpan.FromSeconds(0.6);
-                    StartAnimation.Completed += delegate
-                    {
-                        IUser.Source = imgSrc;
-                        DoubleAnimation EndAnimation = new DoubleAnimation();
-                        EndAnimation.From = 0;
-                        EndAnimation.To = 1;
-                        EndAnimation.Duration = TimeSpan.FromSeconds(1.2);
-                        IUser.BeginAnimation(Image.OpacityProperty, EndAnimation);
-                    };
-                    IUser.BeginAnimation(Image.OpacityProperty, StartAnimation);
+
+                    Tools.AnimateImageChange(IUser, imgSrc);
                 }
                 catch (Exception exp)
                 {
@@ -121,7 +94,7 @@ namespace RegIN_Kylosov.Pages
                     {
                         if (CountSetPassword > 0)
                         {
-                            SetNotification($"Password is incorrect, {CountSetPassword} attempts left", Brushes.Red);
+                            Tools.SetNotification(LNameUser,$"Password is incorrect, {CountSetPassword} attempts left", Brushes.Red);
                             CountSetPassword--;
                         }
                         else
@@ -134,7 +107,7 @@ namespace RegIN_Kylosov.Pages
                     }
                 }
                 else
-                    SetNotification($"Enter capture", Brushes.Red);
+                    Tools.SetNotification(LNameUser,$"Enter capture", Brushes.Red);
             }
         }
 
@@ -158,13 +131,13 @@ namespace RegIN_Kylosov.Pages
                     s_seconds = "0" + TimeIdle.Seconds;
                 Dispatcher.Invoke(() =>
                 {
-                    SetNotification($"Reauthorization available in: {s_minutes}:{s_seconds}", Brushes.Red);
+                    Tools.SetNotification(LNameUser,$"Reauthorization available in: {s_minutes}:{s_seconds}", Brushes.Red);
                 });
                 Thread.Sleep(1000);
             }
             Dispatcher.Invoke(() =>
             {
-                SetNotification("Hi, " + MainWindow.mainWindow.UserLogIn.Name, Brushes.Black);
+                Tools.SetNotification(LNameUser,"Hi, " + MainWindow.mainWindow.UserLogIn.Name, Brushes.Black);
                 TbLogin.IsEnabled = true;
                 TbPassword.IsEnabled = true;
                 Capture.IsEnabled = true;
@@ -192,11 +165,6 @@ namespace RegIN_Kylosov.Pages
                 SetPassword();
         }
 
-        public void SetNotification(string Message, SolidColorBrush _Color)
-        {
-            LNameUser.Content = Message;
-            LNameUser.Foreground = _Color;
-        }
 
         private void RecoveryPassword(object sender, MouseButtonEventArgs e) => MainWindow.mainWindow.OpenPage(new Recovery());
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RegIN_Kylosov.Classes;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -20,11 +21,7 @@ namespace RegIN_Kylosov.Pages
 {
     public partial class Recovery : Page
     {
-        public void SetNotification(string Message, SolidColorBrush _Color)
-        {
-            LNameUser.Content = Message;
-            LNameUser.Foreground = _Color;
-        }
+
 
         string OldLogin;
         bool IsCapture = false;
@@ -33,7 +30,7 @@ namespace RegIN_Kylosov.Pages
         {
             if (OldLogin != TbLogin.Text)
             {
-                SetNotification("Hi, " + MainWindow.mainWindow.UserLogIn.Name, Brushes.Black);
+                Tools.SetNotification(LNameUser, "Hi, " + MainWindow.mainWindow.UserLogIn.Name, Brushes.Black);
                 try
                 {
                     BitmapImage biImg = new BitmapImage();
@@ -42,20 +39,7 @@ namespace RegIN_Kylosov.Pages
                     biImg.StreamSource = ms;
                     biImg.EndInit();
                     ImageSource imgSrc = biImg;
-                    DoubleAnimation StartAnimation = new DoubleAnimation();
-                    StartAnimation.From = 1;
-                    StartAnimation.To = 0;
-                    StartAnimation.Duration = TimeSpan.FromSeconds(0.6);
-                    StartAnimation.Completed += delegate
-                    {
-                        IUser.Source = imgSrc;
-                        DoubleAnimation EndAnimation = new DoubleAnimation();
-                        EndAnimation.From = 0;
-                        EndAnimation.To = 1;
-                        EndAnimation.Duration = TimeSpan.FromSeconds(1.2);
-                        IUser.BeginAnimation(Image.OpacityProperty, EndAnimation);
-                    };
-                    IUser.BeginAnimation(Image.OpacityProperty, StartAnimation);
+                    Tools.AnimateImageChange(IUser, imgSrc);
                 }
                 catch (Exception exp)
                 {
@@ -71,24 +55,12 @@ namespace RegIN_Kylosov.Pages
             if (LNameUser.Content != "")
             {
                 LNameUser.Content = "";
-                DoubleAnimation StartAnimation = new DoubleAnimation();
-                StartAnimation.From = 1;
-                StartAnimation.To = 0;
-                StartAnimation.Duration = TimeSpan.FromSeconds(0.6);
-                StartAnimation.Completed += delegate
-                {
-                    IUser.Source = new BitmapImage(new Uri("pack://application:,,,/Images/ic_user.png"));
-                    DoubleAnimation EndAnimation = new DoubleAnimation();
-                    EndAnimation.From = 0;
-                    EndAnimation.To = 1;
-                    EndAnimation.Duration = TimeSpan.FromSeconds(1.2);
-                    IUser.BeginAnimation(OpacityProperty, EndAnimation);
-                };
-                IUser.BeginAnimation(OpacityProperty, StartAnimation);
+                ImageSource defaultUserImage = new BitmapImage(new Uri("pack://application:,,,/Images/ic_user.png"));
+                Tools.AnimateImageChange(IUser, defaultUserImage);
             }
 
             if (TbLogin.Text.Length > 0)
-                SetNotification("Login is incorrect", Brushes.Red);
+                Tools.SetNotification(LNameUser,"Login is incorrect", Brushes.Red);
         }
 
         private void SetLogin(object sender, KeyEventArgs e)
@@ -105,21 +77,10 @@ MainWindow.mainWindow.UserLogIn.GetUserLogin(TbLogin.Text);
             {
                 if (MainWindow.mainWindow.UserLogIn.Password != String.Empty)
                 {
-                    DoubleAnimation StartAnimation = new DoubleAnimation();
-                    StartAnimation.From = 1;
-                    StartAnimation.To = 0;
-                    StartAnimation.Duration = TimeSpan.FromSeconds(0.6);
-                    StartAnimation.Completed += delegate
-                    {
-                        IUser.Source = new BitmapImage(new Uri("pack://application:,,,/Images/ic-mail.png"));
-                        DoubleAnimation EndAnimation = new DoubleAnimation();
-                        EndAnimation.From = 0;
-                        EndAnimation.To = 1;
-                        EndAnimation.Duration = TimeSpan.FromSeconds(1.2);
-                        IUser.BeginAnimation(OpacityProperty, EndAnimation);
-                    };
-                    IUser.BeginAnimation(OpacityProperty, StartAnimation);
-                    SetNotification("An email has been sent to your email.", Brushes.Black);
+                    ImageSource mailIcon = new BitmapImage(new Uri("pack://application:,,,/Images/ic-mail.png"));
+                    Tools.AnimateImageChange(IUser, mailIcon);
+
+                    Tools.SetNotification(LNameUser,"An email has been sent to your email.", Brushes.Black);
                     MainWindow.mainWindow.UserLogIn.CrateNewPassword();
                 }
             }

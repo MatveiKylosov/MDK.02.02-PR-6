@@ -8,6 +8,7 @@ using Aspose.Imaging;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using RegIN_Kylosov.Classes;
 
 namespace RegIN_Kylosov.Pages
 {
@@ -21,11 +22,11 @@ namespace RegIN_Kylosov.Pages
 
         private void CorrectLogin()
         {
-            SetNotification("Login already in use", Brushes.Red);
+            Tools.SetNotification(LNameUser,"Login already in use", Brushes.Red);
             BCorrectLogin = false;
         }
         private void InCorrectLogin() =>
-SetNotification("", Brushes.Black);
+Tools.SetNotification(LNameUser,"", Brushes.Black);
 
         public Regin()
         {
@@ -50,38 +51,38 @@ SetLogin();
             BCorrectLogin = regex.IsMatch(TbLogin.Text);
             if (regex.IsMatch(TbLogin.Text) == true)
             {
-                SetNotification("", Brushes.Black);
+                Tools.SetNotification(LNameUser,"", Brushes.Black);
                 MainWindow.mainWindow.UserLogIn.GetUserLogin(TbLogin.Text);
             }
             else
-                SetNotification("Invalid login", Brushes.Red);
+                Tools.SetNotification(LNameUser,"Invalid login", Brushes.Red);
             OnRegin();
         }
 
         #region SetPassword
-        private void SetPassword(object sender, System.Windows.RoutedEventArgs e) =>
-SetPassword();
+        private void SetPassword(object sender, System.Windows.RoutedEventArgs e) => SetPassword();
         private void SetPassword(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
                 SetPassword();
         }
+
         public void SetPassword()
         {
-            Regex regex = new Regex(@"(?=.*[0-9])(?=.*[!@#$%^&?*\-_=])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&?*\-_=]{10,}");
-
-            BCorrectPassword = regex.IsMatch(TbPassword.Password);
-            if (regex.IsMatch(TbPassword.Password) == true)
+            BCorrectPassword = Tools.IsPasswordValid(TbPassword.Password);  // Использование метода для проверки пароля
+            if (BCorrectPassword)
             {
-                SetNotification("", Brushes.Black);
+                Tools.SetNotification(LNameUser,"", Brushes.Black);
                 if (TbConfirmPassword.Password.Length > 0)
                     ConfirmPassword(true);
                 OnRegin();
             }
             else
-                SetNotification("Invalid password", Brushes.Red);
-
+            {
+                Tools.SetNotification(LNameUser,"Invalid password", Brushes.Red);
+            }
         }
+
         #endregion
 
 
@@ -98,10 +99,10 @@ ConfirmPassword();
         {
             BCorrectConfirmPassword = TbConfirmPassword.Password == TbPassword.Password;
             if (TbConfirmPassword.Password != TbPassword.Password)
-                SetNotification("Passwords do not match", Brushes.Red);
+                Tools.SetNotification(LNameUser,"Passwords do not match", Brushes.Red);
             else
             {
-                SetNotification("", Brushes.Black);
+                Tools.SetNotification(LNameUser,"", Brushes.Black);
                 if (!Pass)
                     SetPassword();
             }
@@ -176,20 +177,8 @@ ConfirmPassword();
 
                     rasterImage.Save("IUser.jpg");
                 }
-                DoubleAnimation StartAnimation = new DoubleAnimation();
-                StartAnimation.From = 1;
-                StartAnimation.To = 0;
-                StartAnimation.Duration = TimeSpan.FromSeconds(0.6);
-                StartAnimation.Completed += delegate
-                {
-                    IUser.Source = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + @"\IUser.jpg"));
-                    DoubleAnimation EndAnimation = new DoubleAnimation();
-                    EndAnimation.From = 0;
-                    EndAnimation.To = 1;
-                    EndAnimation.Duration = TimeSpan.FromSeconds(1.2);
-                    IUser.BeginAnimation(System.Windows.Controls.Image.OpacityProperty, EndAnimation);
-                };
-                IUser.BeginAnimation(System.Windows.Controls.Image.OpacityProperty, StartAnimation);
+                ImageSource userImage = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + @"\IUser.jpg"));
+                Tools.AnimateImageChange(IUser, userImage);
                 BSetImages = true;
             }
             else
@@ -199,12 +188,6 @@ ConfirmPassword();
         private void OpenLogin(object sender, MouseButtonEventArgs e)
         {
             MainWindow.mainWindow.OpenPage(new Login());
-        }
-
-        public void SetNotification(string Message, SolidColorBrush _Color)
-        {
-            LNameUser.Content = Message;
-            LNameUser.Foreground = _Color;
         }
     }
 }
