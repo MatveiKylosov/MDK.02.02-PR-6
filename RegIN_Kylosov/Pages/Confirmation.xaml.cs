@@ -68,7 +68,14 @@ SetCode();
             {
                 TbCode.IsEnabled = false;
                 if (ThisTypeConfirmation == TypeConfirmation.Login)
+                {
                     MessageBox.Show("Авторизация пользователя успешно подтверждена.");
+
+                    if (string.IsNullOrEmpty(MainWindow.mainWindow.UserLogIn.Pincode))
+                    {
+                        MainWindow.mainWindow.OpenPage(new PincodePage());
+                    }
+                }
                 else
                 {
                     MainWindow.mainWindow.UserLogIn.SetUser();

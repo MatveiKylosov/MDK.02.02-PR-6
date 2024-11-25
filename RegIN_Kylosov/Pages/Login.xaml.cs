@@ -26,6 +26,7 @@ namespace RegIN_Kylosov.Pages
         string OldLogin;
         int CountSetPassword = 2;
         bool IsCapture = false;
+        bool AuthPincode = false;
 
         public void InCorrectLogin()
         {
@@ -44,9 +45,22 @@ namespace RegIN_Kylosov.Pages
 
         public void CorrectLogin()
         {
+            if (AuthPincode)
+                MainWindow.mainWindow.OpenPage(new AuthPin());
             if (OldLogin != TbLogin.Text)
             {
                 Tools.SetNotification(LNameUser,"Hi, " + MainWindow.mainWindow.UserLogIn.Name, Brushes.Black);
+                if (!string.IsNullOrEmpty(MainWindow.mainWindow.UserLogIn.Pincode))
+                {
+                    MessageBoxResult result = MessageBox.Show(
+                        "Log in via pincode?",
+                        "Confirmation of action",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Question
+                    );
+
+                    AuthPincode = result == MessageBoxResult.Yes;
+                }
 
                 try
                 {
@@ -76,12 +90,16 @@ namespace RegIN_Kylosov.Pages
 
         private void SetPassword(object sender, KeyEventArgs e)
         {
+            if (AuthPincode)
+                MainWindow.mainWindow.OpenPage(new AuthPin());
             if (e.Key == Key.Enter)
                 SetPassword();
         }
 
         public void SetPassword()
         {
+            if (AuthPincode)
+                MainWindow.mainWindow.OpenPage(new AuthPin());
             if (MainWindow.mainWindow.UserLogIn.Password != String.Empty)
             {
                 if (IsCapture)
@@ -153,6 +171,9 @@ namespace RegIN_Kylosov.Pages
             if (e.Key == Key.Enter)
             {
                 MainWindow.mainWindow.UserLogIn.GetUserLogin(TbLogin.Text);
+
+                if(AuthPincode)
+                    MainWindow.mainWindow.OpenPage(new AuthPin());
 
                 if (TbPassword.Password.Length > 0)
                     SetPassword();

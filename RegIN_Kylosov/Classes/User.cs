@@ -16,7 +16,9 @@ namespace RegIN_Kylosov.Classes
         public string Name { get; set; } 
         public byte[] Image = new byte[0];
         public DateTime DateUpdate { get; set; }
-        public DateTime DateCreate { get; set; }  
+        public DateTime DateCreate { get; set; }
+        public string Pincode { get; set; }
+
         public CorrectLogin HandlerCorrectLogin;
         public InCorrectLogin HandlerInCorrectLogin;
         public delegate void CorrectLogin();
@@ -29,6 +31,7 @@ namespace RegIN_Kylosov.Classes
             this.Password = String.Empty;
             this.Name = String.Empty;
             this.Image = new byte[0];
+            this.Pincode = String.Empty;
             
             MySqlConnection mySqlConnection = WorkingDB.OpenConnection();
             
@@ -60,8 +63,10 @@ namespace RegIN_Kylosov.Classes
                     
                     this.DateUpdate = userQuery.GetDateTime(5);
                     
-                    this.DateUpdate = userQuery.GetDateTime(6);
-                    
+                    this.DateCreate = userQuery.GetDateTime(6);
+
+                    this.Pincode = !userQuery.IsDBNull(7) ? userQuery.GetString(7) : this.Pincode;
+
                     HandlerCorrectLogin.Invoke();
                 }
                 else
@@ -109,9 +114,7 @@ namespace RegIN_Kylosov.Classes
         
         
         public void CrateNewPassword()
-        {
-            
-            
+        {      
             if (Login != String.Empty)
             {
                 
@@ -128,6 +131,25 @@ namespace RegIN_Kylosov.Classes
                 WorkingDB.CloseConnection(mySqlConnection);
                 
                 SendMail.SendMessage($"Your account password has been changed.\nNew password: {this.Password}", this.Login);
+            }
+        }
+
+        public void SetPincode()
+        {
+            if (Login != String.Empty)
+            {
+
+                MySqlConnection mySqlConnection = WorkingDB.OpenConnection();
+
+                if (WorkingDB.OpenConnection(mySqlConnection))
+                {
+
+                    WorkingDB.Query($"UPDATE `users` SET `Pincode`='{this.Pincode}' WHERE `Login` = '{this.Login}'", mySqlConnection);
+                }
+
+                WorkingDB.CloseConnection(mySqlConnection);
+
+                SendMail.SendMessage($"Your account pincode has been changed.\nNew pincode: {this.Pincode}", this.Login);
             }
         }
 

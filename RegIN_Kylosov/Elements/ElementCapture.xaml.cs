@@ -20,24 +20,10 @@ namespace RegIN_Kylosov.Elements
     /// </summary>
     public partial class ElementCapture : UserControl
     {
-
-
         public CorrectCapture HandlerCorrectCapture;
-
-
-
         public delegate void CorrectCapture();
-
-
-
         string StrCapture = "";
-
-
-
         int ElementWidth = 280;
-
-
-
         int ElementHieght = 50;
 
         public ElementCapture()
@@ -47,11 +33,8 @@ namespace RegIN_Kylosov.Elements
             CreateCapture();
         }
 
-
-
         public void CreateCapture()
         {
-
             InputCapture.Text = "";
 
             Capture.Children.Clear();
@@ -66,7 +49,6 @@ namespace RegIN_Kylosov.Elements
         #region CreateCapture
         void CreateBackground()
         {
-
             Random ThisRandom = new Random();
 
             for (int i = 0; i < 100; i++)
@@ -91,8 +73,6 @@ namespace RegIN_Kylosov.Elements
                 Capture.Children.Add(LBackground);
             }
         }
-
-
 
         void Background()
         {
@@ -126,19 +106,13 @@ namespace RegIN_Kylosov.Elements
 
 
 
-
         public bool OnCapture()
         {
-
-
             return StrCapture == InputCapture.Text;
         }
 
-
-
         private void EnterCapture(object sender, KeyEventArgs e)
         {
-
             if (InputCapture.Text.Length == 4)
 
                 if (!OnCapture())
