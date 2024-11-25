@@ -1,22 +1,13 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-
+using Aspose.Imaging;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace RegIN_Kylosov.Pages
 {
@@ -78,11 +69,6 @@ SetPassword();
         public void SetPassword()
         {
             Regex regex = new Regex(@"(?=.*[0-9])(?=.*[!@#$%^&?*\-_=])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&?*\-_=]{10,}");
-            //(?=.*[0 - 9]) - строка содержит хотя бы одно число;
-            //(?=.*[!@#$%^&?*\-_=]) - строка содержит хотя бы один спецсимвол;
-            //(?=.*[a - z]) - строка содержит хотя бы одну латинскую букву в нижнем регистре;
-            //(?=.*[A - Z]) - строка содержит хотя бы одну латинскую букву в верхнем регистре;
-            //[0-9a-zA-Z!@#$%^&?*\-_=]{10,} - строка состоит не менее, чем из 10 вышеупомянутых символов.
 
             BCorrectPassword = regex.IsMatch(TbPassword.Password);
             if (regex.IsMatch(TbPassword.Password) == true)
@@ -151,7 +137,7 @@ ConfirmPassword();
         {
             if (FileDialogImage.ShowDialog() == true)
             {
-                using (Imaging.Image image = Imaging.Image.Load(FileDialogImage.FileName))
+                using (Aspose.Imaging.Image image = Aspose.Imaging.Image.Load(FileDialogImage.FileName))
                 {
                     int NewWidth = 0;
                     int NewHeight = 0;
@@ -167,8 +153,9 @@ ConfirmPassword();
                     }
                     image.Resize(NewWidth, NewHeight);
                     image.Save("IUser.jpg");
+
                 }
-                using (Imaging.RasterImage rasterImage = (Imaging.RasterImage)Imaging.Image.Load("IUser.jpg"))
+                using (Aspose.Imaging.RasterImage rasterImage = (Aspose.Imaging.RasterImage)Aspose.Imaging.Image.Load("IUser.jpg"))
                 {
                     if (!rasterImage.IsCached)
                     {
@@ -184,7 +171,7 @@ ConfirmPassword();
                     else
                         Y = (int)((rasterImage.Height - 256f) / 2);
 
-                    Imaging.Rectangle rectangle = new Imaging.Rectangle(X, Y, Width, Height);
+                    Aspose.Imaging.Rectangle rectangle = new Aspose.Imaging.Rectangle(X, Y, Width, Height);
                     rasterImage.Crop(rectangle);
 
                     rasterImage.Save("IUser.jpg");
@@ -200,9 +187,9 @@ ConfirmPassword();
                     EndAnimation.From = 0;
                     EndAnimation.To = 1;
                     EndAnimation.Duration = TimeSpan.FromSeconds(1.2);
-                    IUser.BeginAnimation(Image.OpacityProperty, EndAnimation);
+                    IUser.BeginAnimation(System.Windows.Controls.Image.OpacityProperty, EndAnimation);
                 };
-                IUser.BeginAnimation(Image.OpacityProperty, StartAnimation);
+                IUser.BeginAnimation(System.Windows.Controls.Image.OpacityProperty, StartAnimation);
                 BSetImages = true;
             }
             else
