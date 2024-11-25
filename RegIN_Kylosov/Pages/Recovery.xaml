@@ -31,7 +31,7 @@
                     Margin="32"
                     VerticalAlignment="Top"
                     Width="100"
-                    Source="/RegIN_Kylosov;component/Images/ic-user.png">
+                    Source="/RegIN_Kylosov;component/Images/ic_user.png">
 
                     <Image.Clip>
                         <EllipseGeometry
