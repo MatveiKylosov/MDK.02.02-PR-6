@@ -200,6 +200,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\ic-mail.png" />
     <Content Include="SQL\CreateTable.sql" />
   </ItemGroup>
   <ItemGroup>
