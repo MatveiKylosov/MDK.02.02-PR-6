@@ -18,9 +18,10 @@ namespace RegIN_Kylosov.Classes
             var smtpClient = new SmtpClient("smtp.yandex.ru")
             {
                 Port = 587,
-                Credentials = new NetworkCredential("yandex@yandex.ru", "password"),
+                Credentials = new NetworkCredential("TestKylosov@yandex.ru", "ekdzbcygzmqoomcx"),
                 EnableSsl = true,
             };
+
             smtpClient.Send("landaxer@yandex.ru", To, "Проект RegIn", Message);
         }
     }
